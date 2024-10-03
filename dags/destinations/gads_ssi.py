@@ -324,7 +324,7 @@ class Destination:
       of this protocol.
     """
     return ProtocolSchema(
-        "GADS_SSI",
+        "META_AUD",
         [
             ("client_id", str, Field(description="An OAuth2.0 Web Client ID.")),
             (
