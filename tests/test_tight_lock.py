@@ -50,7 +50,7 @@ def trigger_connection(connection_name, dry_run=False):
     url = f"{BASE_URL}/activations/{connection_name}:trigger"
     data = {"dry_run": 1 if dry_run else 0}
     response = requests.post(url, headers=headers, json=data)
-    return response.json()
+    return response.text
 
 def test_connection():
     """
@@ -62,48 +62,44 @@ def test_connection():
     response = requests.post(url, headers=headers)
     return response.text, response.status_code
 
-# Example usage:
-if __name__ == "__main__":
-    # Test the connection
-    response, status_code = test_connection()
-    print(f"Connection test response (status {status_code}): {response}")
-    
+def setup():
     # Example configuration with Meta Marketing destination
     new_config = {
-        "label": "Example BQ to Meta Marketing",
+        "label": "TEST 3 BQ to meta",
         "value": {
-            "external_connections": [], 
+            "external_connections": [],
 
             "sources": {
-                "example_bigquery_table": {
+                "test3_bq": {
                     "type": "BIGQUERY",
-                    "dataset": "bq_dataset_example_name",
-                    "table": "bq_table_example_name"
+                    "dataset": "tightlock_sample_data",
+                    "table": "test_meta_table",
+                    "unique_id" : "email"
                 }
             },
 
             "destinations": {
-                "example_meta_marketing": {
+                "test3_meta": {
                     "type": "META_MARKETING",
-                    "access_token": "YOUR_ACCESS_TOKEN_HERE",
-                    "ad_account_id": "YOUR_AD_ACCOUNT_ID_HERE",
+                    "access_token": "EAAL9plm0REcBOxZAoHFHMeFCz3bNZCZCravyapbkuFKymTvFenk46JXWZAOxsZAZAZBrhd56cKub7p924ZAEss7RXwc3gAYgWAa6cA7PL9jCSFZBzbvOosPHC4kjVZB4fnxQWyeozblxZC7h05ZCZAlgX0eVUYWrf9XJhGq5TQ756IrpomzqrEHHoC0F85MJL7VZBQkXSLFCBYyOYZBXP0EntKjJSL5YhOU3TkZD",
+                    "ad_account_id": "1158906525188725",
                     "payload_type": PayloadType.CREATE_USER.value,
-                    "audience_name": "Tightlock Test Audience"
+                    "audience_name": "Marketing TL Audience from BQ 2"
                 }   
             },
 
             "activations": [
                 {
-                    "name": "example_bq_to_meta_marketing",
+                    "name": "test_3_bq_to_meta",
                     "source": {
-                        "$ref": "#/sources/example_bigquery_table"
+                        "$ref": "#/sources/test3_bq"
                     },
                     "destination": {
-                        "$ref": "#/destinations/example_meta_marketing"
+                        "$ref": "#/destinations/test3_meta"
                     },
-                    "schedule": "@weekly"
+                    "schedule": "@hourly"
                 }
-            ], 
+            ],
 
             "secrets": {},
         }
@@ -117,10 +113,15 @@ if __name__ == "__main__":
     print("\nGetting current config:")
     print(get_current_config())
 
+
+# Example usage:
+if __name__ == "__main__":
+    # Test the connection
+    response, status_code = test_connection()
+    print(f"Connection test response (status {status_code}): {response}")
+    
+    # setup()
+
     # Trigger the connection (dry run)
     print("\nTriggering connection (dry run):")
-    print(trigger_connection("example_bq_to_meta_marketing", dry_run=True))
-
-    # Trigger the connection (actual run)
-    print("\nTriggering connection (actual run):")
-    print(trigger_connection("example_bq_to_meta_marketing", dry_run=False))
+    print(trigger_connection("test_3_bq_to_meta", dry_run=True))
